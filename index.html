@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JuniorSchueller's simple HLS embedder</title>
+</head>
+<body>
+    <video id="video" style="width: 100%; height: auto;"></video>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+
+        function updateVideoSize() {
+            const video = document.getElementById('video');
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            video.style.width = windowWidth + 'px';
+            video.style.height = 'auto';
+
+        }
+
+        window.addEventListener('resize', updateVideoSize);
+        window.addEventListener('load', updateVideoSize);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoSrc = urlParams.get('video'); 
+
+        if (videoSrc) {
+            const video = document.getElementById('video');
+
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(videoSrc);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.play();
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+
+                video.src = videoSrc;
+                video.addEventListener('loadedmetadata', () => {
+                    video.play();
+                });
+            } else {
+                alert('Seu navegador não suporta HLS.');
+            }
+        } else {
+            alert('URL do vídeo não fornecida.');
+        }
+    </script>
+</body>
+</html>
