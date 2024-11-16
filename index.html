@@ -46,6 +46,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
+
         .play-button:hover {
             background-color: #f0f0f0;
             transform: scale(1.1);
@@ -63,11 +64,25 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const videoSrc = urlParams.get('video'); 
+        const videoSrc = urlParams.get('video');
+
+        // Parâmetros para controles e loop
+        const showControls = urlParams.get('controls') === 'true';
+        const loop = urlParams.get('loop') === 'true';
 
         const video = document.querySelector('#video');
         const overlay = document.querySelector('#overlay');
         const playButton = document.querySelector('#playButton');
+
+        // Configura o controle de video (se a query string contiver 'controls=true')
+        if (showControls) {
+            video.controls = true;
+        }
+
+        // Ativa o loop (se a query string contiver 'loop=true')
+        if (loop) {
+            video.loop = true;
+        }
 
         function playVideo() {
             if (Hls.isSupported()) {
